@@ -1,31 +1,32 @@
-// GIVEN I am taking a code quiz
-
-// Global Variables:
-var quizContainer = document.getElementById('quiz');
+// Global Variables
+var quizContainer = document.getElementsByClassName('quiz');
 var startEl = document.getElementById('start');
 var restartEl = document.getElementById(".restart");
 var timerEl = document.getElementById('timer');  
 var secondsLeft = 120;
-var ulEl = document.getElementById('ul');
 var aa = document.getElementById('A');
 var bb = document.getElementById('B');
 var cc = document.getElementById('C');
 var dd = document.getElementById('D');
 var highScore = document.getElementById('highscore');
-var results = document.getElementById('results');
-var score = document.getElementById("score").innerHTML = 0; 
+var correctAnswers = document.getElementById("correctAnswers").innerHTML = 0;
+var scoreName = "";
+var displayedScores = [];
+var scoresList = document.getElementById('pastScores');
 
-// WHEN I click the start button
-    //Event Listener to load question and start timer
 
-    startEl.addEventListener('click', function (event) {
-        event.preventDefault();
-        loadQuestion();
-        setTime(secondsLeft);
-    }); 
+//Event Listener to display quiz, load question and start timer 
+//(after clicking start button)
+startEl.addEventListener('click', function (event) {
+    event.preventDefault();
+    restart.style.display="none";
+    startEl.style.display="none";
+    document.querySelectorAll('.quiz').forEach(a=>a.style.display = "block");
+    loadQuestion();
+    setTime(secondsLeft);
+}); 
 
-// THEN a timer starts and I am presented with a question
-    //Timer
+//Timer
 function setTime() { 
       // Sets interval in variable
     var timerInterval = setInterval(function() {
@@ -39,111 +40,120 @@ function setTime() {
     
     }, 1000);
 };
-// WHEN I answer a question
-    //Arrays for questions - One big array
-    const questions = [
-        {
-            question: "Which two variables can a Boolean function return?",
-            answers: ["Up/Down", "Right/Left", "True/False", "Cat/Dog"],
-            correctAnswer: "C"
-        }, 
-        {
-            question: "Which type of variable can be globally scoped?",
-            answers: ["const", "var", "let", "event"],
-            correctAnswer: "B"
-        },
-        {
-            question: "Which of the following represents abstract equality?",
-            answers: ["=", "==", "$", "!=="],
-            correctAnswer: "B"
-        },
-        {
-            question: "Style properties can be altered with Javascript via the ______ method.",
-            answers: ["addEventListener", "sendMessage", "preventDefault", "setAttribute"],
-            correctAnswer: "D"
-        },
-        {
-            question: '2 + "2" = __',
-            answers: ["22", "4", "7", "12"],
-            correctAnswer: "A"
-        }
-    ];
 
-    //Function to load next question
-    var currentQuestion = 0;
-    function loadQuestion () {
-        var data = questions [currentQuestion];
-        var Q = document.getElementById("questionSpot");
-        Q.textContent = data.question;
-        aa.textContent = data.answers[0];
-        bb.textContent = data.answers[1];
-        cc.textContent = data.answers[2];
-        dd.textContent = data.answers[3];
-    };
-// THEN I am presented with another question
-    //for loop to cycle through questions
+//Arrays for questions - One big array
+const questions = [
+    {
+        question: "Which two variables can a Boolean function return?",
+        answers: ["Up/Down", "Right/Left", "True/False", "Cat/Dog"],
+        correctAnswer: "C"
+    }, 
+    {
+        question: "Which type of variable can be globally scoped?",
+        answers: ["const", "var", "let", "event"],
+        correctAnswer: "B"
+    },
+    {
+        question: "Which of the following represents abstract equality?",
+        answers: ["=", "==", "$", "!=="],
+        correctAnswer: "B"
+    },
+    {
+        question: "Style properties can be altered with Javascript via the ______ method.",
+        answers: ["addEventListener", "sendMessage", "preventDefault", "setAttribute"],
+        correctAnswer: "D"
+    },
+    {
+        question: '2 + "2" = __',
+        answers: ["22", "4", "7", "12"],
+        correctAnswer: "A"
+    }
+];
+
+//Function to load next question
+var currentQuestion = 0;
+function loadQuestion () {
+    var data = questions [currentQuestion];
+    var Q = document.getElementById("questionSpot");
+    Q.textContent = data.question;
+    aa.textContent = data.answers[0];
+    bb.textContent = data.answers[1];
+    cc.textContent = data.answers[2];
+    dd.textContent = data.answers[3];
+};
+
+//for loop to cycle through questions
 var questionArray = questions.length;
 for (i = 0; i < questionArray; i++);
 
-// WHEN I answer a question incorrectly
-
-// THEN time is subtracted from the clock
-
-//Function to check correctness
+//Function to check correctness and subtract time (20 seconds) for wrong answers
 document.getElementById("answers").addEventListener("click", function (event) {
     event.preventDefault();
     if (event.target.value !== questions [currentQuestion].correctAnswer) {
         secondsLeft -= 20;
     } else {
-        score += 1;
-        console.log(score); 
-        document.getElementById("score").innerHTML = score;
+        correctAnswers += 1;
+        console.log(correctAnswers); 
+        document.getElementById("correctAnswers").innerHTML = correctAnswers;
     };
 
-//Checks whether it is the last question or not
-
+    //Checks quiz is on the last question or if time is up
     if (currentQuestion === 4) {
-        clearInterval(quizContainer);
+        clearInterval(secondsLeft);
         alert("Finished!");
-        scoreName = prompt("Please enter your name for our high scores list:");
+        getScoreName();
     } else if (secondsLeft === 0) {
-        clearInterval(quizContainer);
+        clearInterval(secondsLeft);
         alert("Time is up!");
-        scoreName = prompt("Please enter your name for our high scores list:");
+        getScoreName();
     } else {
         currentQuestion++;
         loadQuestion();
     };
-
-    var finalScore = scoreName + ", " + score;
-    console.log(finalScore);
-    // FIX THIS -> localStorage.setItem("finalScore", JSON.stringify(finalScore)); 
 });
 
-
-// WHEN all questions are answered or the timer reaches 0 -DONE
-
-// THEN the game is over
-    // Trigger an event based off the timer running out - clearInterval - DONE
-
-    // Would this be done within the timer code or separately? - Both
-    //Functions to end quiz, populate next question, show high scores, etc
-
-// WHEN the game is over
-
-// THEN I can save my initials and my score
-    //Local Storage, render high scores on bottom of page 
-
-// var scoreNames = prompt("Please enter your name for our high scores list:").trim;
+function getScoreName() {
+    scoreName = prompt("Please enter your name for our high scores list:");
+    console.log(scoreName)
+};
 
 
 
-//FIX THIS:
+var finalScore = {
+    name: scoreName, 
+    score: correctAnswers,
+};
 
-// // //use .append to add names and score to HTML table
+console.log(finalScore)
 
-// var highestScores = function () {
-//     if (finalScore < document.getElementById("3rd"));
-//         finalScore.appendChild("3rd");
-//     } else if (highScore > document.getElementById("3rdScore"));
-//  )};
+
+localStorage.setItem("finalScore", JSON.stringify(finalScore));
+    console.log(finalScore)
+
+
+function showScores() {
+    for (var i = 0; i < displayedScores.length; i++) {
+        var score = scoresList[i];
+
+        var li = document.createElement("li");
+        li.setAttribute("data-index", i)
+        li.textContent = score;
+        scoresList.append(li);
+    };
+};
+
+console.log(scoresList);
+
+function init() {
+    var displayedScores = localStorage.getItem("finalScore");
+    console.log(displayedScores);
+    if (displayedScores !== null) {
+        scoresList = displayedScores;
+        console.log(scoresList);
+        console.log(displayedScores);
+    };
+    // storeScores();
+    showScores();
+};
+
+init();
